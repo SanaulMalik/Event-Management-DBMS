@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %}Tathva{% endblock %}</h1>
+        <a href="{{ url_for('allevents')}}">
+            <h2>Events List</h2>
+        </a>
+        <hr>
+        <a href="{{ url_for('allstudents')}}">
+            <h2>Students List</h2>
+        </a>
+        <hr>
+        <a href="{{ url_for('allvenues')}}">
+            <h2>Venues List</h2>
+        </a>
+        <hr>
+        <a href="{{ url_for('allparticipants')}}">
+            <h2>Participants List</h2>
+        </a>
+        <hr>
+
+
+
+{% endblock %}

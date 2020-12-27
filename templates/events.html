@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Tathva {% endblock %}</h1>
+    {% for event in events %}
+        <a href="{{ url_for('event', event_id = event['Event_ID'])}}"
+            <h2>{{ event['Event_name'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ event['Event_ID'] }}</span>
+        <hr>
+    {% endfor %}
+{% endblock %}
