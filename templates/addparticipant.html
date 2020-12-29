@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Add a new Participant{% endblock %}</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="pid">Participant ID</label>
+        <input type="text" name="pid"
+               placeholder="Participant ID" class="form-control"
+               value="{{ request.form['pid'] }}"></input>
+    </div>
+    <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="number"  name="phone" placeholder="Phone"
+                  class="form-control">{{ request.form['phone'] }}</input>
+    </div>
+    
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text"  name="name" placeholder="Name"
+                  class="form-control">{{ request.form['name'] }}</input>
+    </div>
+
+    <div class="form-group">
+        <label for="college">College</label>
+        <input type="text"  name="college" placeholder="College"
+                  class="form-control">{{ request.form['college'] }}</input>
+    </div>
+
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+{% endblock %}
