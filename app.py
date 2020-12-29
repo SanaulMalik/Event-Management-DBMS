@@ -105,8 +105,32 @@ def editstudent(roll_no):
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
+    
+@app.route('/events/<string:event_id>/remove/workson/<string:roll_no>',methods = ('POST',))
+def remove_works_on(roll_no,event_id):
+    conn = get_db_connection()
+    conn.execute('DELETE FROM Works_on WHERE Roll_no = ? AND Event_ID = ?', (roll_no,event_id))
+    conn.commit()
+    conn.close()
+    #flash('"{}" was successfully deleted!'.format(student['title']))
+    return redirect(url_for('index'))
 
-    return render_template('editstudent.html',student = student )
+@app.route('/events/<string:event_id>/remove/participant/<string:pid>',methods = ('POST',))
+def remove_participation(event_id,pid):
+    conn = get_db_connection()
+    conn.execute('DELETE FROM Participation WHERE Event_ID = ? AND Pid = ?',(event_id,pid))
+    conn.commit()
+    #conn.close()
+    return redirect(url_for('event',event_id = event_id))
+
+@app.route('/events/<string:event_id>/remove/winner/<string:pid>',methods = ('POST',))
+def remove_winner(event_id,pid):
+    conn = get_db_connection()
+    conn.execute('DELETE FROM Winners WHERE Event_ID = ? AND Pid = ?',(event_id,pid))
+    
+    conn.commit()
+    conn.close()
+    return redirect(url_for('event',event_id = event_id))
 
 @app.route('/students/newstudent',methods = ('GET','POST'))
 def newstudent():
@@ -216,6 +240,22 @@ def newwinner(event_id):
             conn.close()
             return redirect(url_for('index'))
     return render_template('addwinner.html')
+
+@app.route('/events/<string:event_id>/newparticipant', methods = ('GET','POST'))
+def newparticipation(event_id):
+    if request.method == 'POST':
+        pid = request.form['pid']
+        #reception_status = request.form['reception_status']
+
+        conn = get_db_connection()
+        participant = conn.execute("SELECT Pid FROM Participants WHERE Pid = ?",(pid,)).fetchone()
+        if not participant:
+            flash('Enter a valid participant')
+        else:
+            conn.execute("INSERT INTO Participation (Pid,Event_ID) VALUES (?,?)",(pid,event_id))
+            conn.commit()
+            return redirect(url_for('event',event_id = event_id))
+    return render_template('addparticipation.html')
 
 @app.route('/events/<string:event_id>/newwork', methods = ('GET','POST'))
 def newwork(event_id):

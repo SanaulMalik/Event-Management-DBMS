@@ -758,6 +758,11 @@
 
 
                                                     <p>Phone Number : {{student['Phone']}}</p>
+                                                    <form action="{{ url_for('remove_works_on', roll_no=student['Roll_no'], event_id = event['Event_ID']) }}" method="POST">
+                                                        <input type="submit" value="Delete Student"
+                                                                class="btn btn-danger btn-sm"
+                                                                onclick="return confirm('Are you sure you want to delete this Student?')">
+                                                    </form>
                                                 </div>
                                             </div>
                                             {%endfor%}
@@ -771,11 +776,12 @@
                                             <h4><span style="text-decoration:underline;">PARTICIPANTS</span></h4>
 
 
-
+                                            <a href = "{{url_for('newparticipation',event_id = event['Event_ID'])}}">
                                             <div class="wp-block-image">
                                                 <figure class="aligncenter size-large is-resized"><img loading="lazy" src="https://agendanitc.files.wordpress.com/2020/12/add-6.png?w=614" alt="" class="wp-image-231" width="55" height="55" srcset="https://agendanitc.files.wordpress.com/2020/12/add-6.png?w=55 55w, https://agendanitc.files.wordpress.com/2020/12/add-6.png?w=110 110w"
                                                         sizes="(max-width: 55px) 100vw, 55px" /></figure>
                                             </div>
+                                            </a>
 
 
                                             {%for participant in participants%}
@@ -797,6 +803,12 @@
                                                     <p>Phone Number : {{participant['Phone']}}</p>
                                                 </div>
                                             </div>
+                                            <form action="{{ url_for('remove_participation', pid=participant['Pid'], event_id = event['Event_ID']) }}" method="POST">
+                                                <input type="submit" value="Delete Participant"
+                                                        class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('Are you sure you want to delete this participant?')">
+                                            </form>
+                                            
                                             {%endfor%}
                                         </div>
                                     </div>
@@ -829,6 +841,11 @@
                                             <p>Position : {{winner['Position']}}</p>
                                         </div>
                                     </div>
+                                    <form action="{{ url_for('remove_winner', pid=winner['Pid'], event_id = event['Event_ID']) }}" method="POST">
+                                        <input type="submit" value="Delete Winner"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Are you sure you want to delete this Winner?')">
+                                    </form>
                                     {%endfor%}
 
 
