@@ -4,9 +4,9 @@
     <h1>{% block title %} Tathva Participants{% endblock %}</h1>
     {% for participant in participants %}
         <a href="#"
-            <h2>{{ particpant['Name'] }}</h2>
+            <h2>{{ participant['Name'] }}</h2>
         </a>
-        <span class="badge badge-primary">{{ particpant['Pid'] }}</span>
+        <span class="badge badge-primary">{{ participant['Pid'] }}</span>
         <hr>
     {% endfor %}
 {% endblock %}

@@ -1,6 +1,6 @@
 CREATE TABLE Event (Event_ID VARCHAR(10) PRIMARY KEY, 
 Event_name VARCHAR(20), Date_Time TIMESTAMP, Status VARCHAR(10), 
-Venue_ID VARCHAR(10));
+Venue_ID VARCHAR(10), FOREIGN KEY (Venue_ID) REFERENCES Venue);
 
 CREATE TABLE Student(Roll_no VARCHAR(10) PRIMARY KEY ,
 Name VARCHAR(20), Email VARCHAR(30), Committee VARCHAR(10), 
@@ -19,7 +19,7 @@ PRIMARY KEY(Pid, Event_ID), FOREIGN KEY(Pid) REFERENCES
 Participants, FOREIGN KEY(Event_ID) REFERENCES Event);
 
 CREATE TABLE Venue(Venue_ID VARCHAR(10) PRIMARY KEY, 
-Venue_name VARCHAR(20), Faculty_incahrge VARCHAR(20), 
+Venue_name VARCHAR(20), Faculty_incharge VARCHAR(20), 
 Dept VARCHAR(10));
 
 CREATE TABLE Participation ( Event_ID VARCHAR(10), 

@@ -41,23 +41,40 @@ def get_post(post_id):
         abort(404)
     return post
 
-def get_event(event_id):
-    conn = get_db_connection()
+def get_event(event_id,conn):
+    #conn = get_db_connection()
     event = conn.execute('SELECT * FROM Event WHERE Event_ID = ?', (event_id,)).fetchone()
-    conn.close()
+    #conn.close()
     return event
 
-def get_students_for_event(event_id):
-    conn = get_db_connection()
-    students = conn.execute("SELECT Name, Phone, Roll_no FROM Student S,Works_on W WHERE S.Roll_no = W.Roll_no AND W.Event_ID = event_id")
-    conn.close()
+def get_students_for_event(event_id,conn):
+    #conn = get_db_connection()
+    students = conn.execute("SELECT S.Name, S.Phone, S.Roll_no FROM Student S,Works_on W WHERE S.Roll_no = W.Roll_no AND W.Event_ID = ?",(event_id,)).fetchall()
+    #conn.close()
     return students
 
-def get_participants_for_event(event_id):
-    conn = get_db_connection()
-    participants = conn.execute("SELECT Name, Phone, College FROM Participants A, Participation B WHERE A.Pid = B.Pid AND B.Event_ID = event_id")
-    conn.close()
+def get_participants_for_event(event_id,conn):
+    #conn = get_db_connection()
+    participants = conn.execute("SELECT A.Name, A.Phone, A.College, A.Pid FROM Participants A, Participation B WHERE A.Pid = B.Pid AND B.Event_ID = ?",(event_id,)).fetchall()
+    #conn.close()
     return participants
+
+def get_venue_for_event(event_id,conn):
+    #conn = get_db_connection()
+    venue = conn.execute("SELECT V.Venue_ID, V.Venue_name, V.Faculty_incharge, V.Dept FROM Venue V, Event E WHERE V.Venue_ID = E.Venue_ID AND E.Event_ID = ?",(event_id,)).fetchone()
+    #conn.close()
+    return venue
+def get_judges_for_event(event_id,conn):
+    judges = conn.execute("SELECT J.Name, J.Judge_ID FROM Judge J WHERE J.Event_ID = ?",(event_id,)).fetchall()
+    return judges
+
+
+def get_winners_for_event(event_id,conn):
+    #conn = get_db_connection()
+    winners = conn.execute("SELECT P.Pid, P.Name, W.Position FROM Participants P,Winners W WHERE P.Pid = W.Pid AND W.Event_ID = ?",(event_id,) ).fetchall()
+    #conn.close()
+    return winners
+
 
 @app.route('/students/newstudent',methods = ('GET','POST'))
 def newstudent():
@@ -67,7 +84,7 @@ def newstudent():
             email = request.form['email']
             committee = request.form['committee']
             year = request.form['year']
-            phone = request.form['year']
+            phone = request.form['phone']
 
             if not name:
                 flash('Name is required')
@@ -97,14 +114,110 @@ def newevent():
                 return redirect(url_for('index'))
     return render_template('addevent.html')
 
+@app.route('/judges/newjudge',methods = ('GET','POST'))
+def newjudge():
+    if request.method == 'POST':
+            name = request.form['name']
+            judge_id = request.form['judge_id']
+            event_id = request.form['event_id']
 
+            if not name:
+                flash('Name is required')
+            else:
+                conn = get_db_connection()
+                conn.execute('INSERT INTO Judge VALUES (?,?,?)', (judge_id,name,event_id))
+                conn.commit()
+                conn.close()
+                return redirect(url_for('index'))
+    return render_template('addjudge.html')
 
+@app.route('/participants/newparticipant',methods = ('GET','POST'))
+def newparticipant():
+    if request.method == 'POST':
+            name = request.form['name']
+            pid = request.form['pid']
+            phone = request.form['phone']
+            college = request.form['college']
+
+            if not name:
+                flash('Name is required')
+            else:
+                conn = get_db_connection()
+                conn.execute('INSERT INTO Participants VALUES (?,?,?,?)', (pid,phone,college,name))
+                conn.commit()
+                conn.close()
+                return redirect(url_for('index'))
+    return render_template('addparticipant.html')
+
+@app.route('/venues/newvenue',methods = ('GET','POST'))
+def newvenue():
+    if request.method == 'POST':
+            venue_name = request.form['venue_name']
+            venue_id = request.form['venue_id']
+            faculty_incharge = request.form['faculty_incharge']
+            dept = request.form['dept']
+
+            if not venue_name:
+                flash('Venue Name is required')
+            else:
+                conn = get_db_connection()
+                conn.execute('INSERT INTO Venue VALUES (?,?,?,?)', (venue_id,venue_name,faculty_incharge,dept))
+                conn.commit()
+                conn.close()
+                return redirect(url_for('index'))
+    return render_template('addvenue.html')
+
+@app.route('/events/<string:event_id>/newwinner', methods = ('GET','POST'))
+def newwinner(event_id):
+    if request.method == 'POST':
+        pid = request.form['pid']
+        position = request.form['position']
+        #reception_status = request.form['reception_status']
+
+        conn = get_db_connection()
+        participant = conn.execute("SELECT Pid FROM Participants WHERE Pid = ?",(pid,)).fetchone()
+        if not participant:
+            flash('Enter a valid participant')
+        else:
+            conn.execute("INSERT INTO Winners (Pid,Position,Event_ID) VALUES (?,?,?)",(pid,position,event_id))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
+    return render_template('addwinner.html')
+
+@app.route('/events/<string:event_id>/newwork', methods = ('GET','POST'))
+def newwork(event_id):
+    if request.method == 'POST':
+        roll_no = request.form['roll_no']
+        #reception_status = request.form['reception_status']
+
+        conn = get_db_connection()
+        student = conn.execute("SELECT Roll_no FROM Student WHERE Roll_no = ?",(roll_no,)).fetchone()
+        if not student:
+            flash('Enter a valid student')
+        else:
+            conn.execute("INSERT INTO Works_on VALUES (?,?)",(event_id,roll_no))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
+    return render_template('addwork.html')
+
+        
+
+#events not completed
 @app.route('/events/<string:event_id>')
 def event(event_id):
-    event = get_event(event_id)
-    students = get_students_for_event(event_id)
-    participants = get_participants_for_event(event_id)
-    return render_template('event.html',event = event)
+    conn = get_db_connection()
+    
+    event = get_event(event_id,conn)
+    students = get_students_for_event(event_id,conn)
+    participants = get_participants_for_event(event_id,conn)
+    judges = get_judges_for_event(event_id, conn)
+    winners = get_winners_for_event(event_id,conn)
+    venue = get_venue_for_event(event_id,conn)
+    
+    return render_template('event2.html',event = event, venue = venue,judges = judges,students = students,participants = participants,winners = winners)
+
 
 @app.route("/events")
 def allevents():
@@ -112,7 +225,7 @@ def allevents():
     events = conn.execute('SELECT * FROM Event').fetchall()
     #print (events)
     conn.close()
-    return render_template('events.html', events = events)  
+    return render_template('events2.html', events = events)  
 
 @app.route("/students")
 def allstudents():
@@ -120,7 +233,7 @@ def allstudents():
     students = conn.execute('SELECT * FROM Student').fetchall()
     #print (events)
     conn.close()
-    return render_template('students.html', students = students)
+    return render_template('students2.html', students = students)
 
 @app.route("/participants")
 def allparticipants():
@@ -128,7 +241,7 @@ def allparticipants():
     participants = conn.execute('SELECT * FROM Participants').fetchall()
     #print (events)
     conn.close()
-    return render_template('participants.html', participants = participants)
+    return render_template('participants2.html', participants = participants)
 
 @app.route("/venues")
 def allvenues():
@@ -136,8 +249,23 @@ def allvenues():
     venues = conn.execute('SELECT * FROM Venue').fetchall()
     #print (events)
     conn.close()
-    return render_template('venues.html', venues = venues)
+    return render_template('venues2.html', venues = venues)
+
+@app.route("/winners")
+def allwinners():
+    conn = get_db_connection()
+    winners = conn.execute("SELECT P.Pid, P.Name, P.College, P.Phone, W.Event_ID, W.Position, W.Reception_status FROM Participants P, Winners W, Event E WHERE P.Pid = W.Pid AND W.Event_ID = E.Event_ID")
+    conn.commit()
+    #conn.close()
+    return render_template('winners.html',winners = winners)
+
+@app.route('/judges')
+def alljudges():
+    conn = get_db_connection()
+    judges = conn.execute("SELECT * FROM Judge")
+    #conn.close()
+    return render_template('judges.html', judges = judges)
 
 @app.route("/")
 def  index():
-    return render_template('indexf.html')
+    return render_template('indexf2.html')
