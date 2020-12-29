@@ -252,12 +252,12 @@ def newrequirement(event_id):
         requirement = request.form['requirement']
         count = request.form['count']
         #reception_status = request.form['reception_status']
-
+        conn = get_db_connection()
         conn.execute("INSERT INTO Requirements (Requirement,Count, Event_ID) VALUES (?,?,?)",(requirement,count,event_id))
         conn.commit()
         conn.close()
         return redirect(url_for('event',event_id = event_id))
-    render_template((url_for('addrequirement.html')))
+    return render_template('addrequirement.html')
  
 
 @app.route('/events/<string:event_id>/newparticipant', methods = ('GET','POST'))

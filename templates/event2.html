@@ -728,6 +728,27 @@
 
                                             <hr class="wp-block-separator" />
 
+                                            <h4><span style="text-decoration:underline;">REQUIREMENTS</span></h4>
+                                            <a href = "{{url_for('newrequirement',event_id = event['Event_ID'])}}">
+                                                <div class="wp-block-image">
+                                                    <figure class="aligncenter size-large is-resized"><img loading="lazy" src="https://agendanitc.files.wordpress.com/2020/12/add-6.png?w=614" alt="" class="wp-image-231" width="55" height="55" srcset="https://agendanitc.files.wordpress.com/2020/12/add-6.png?w=55 55w, https://agendanitc.files.wordpress.com/2020/12/add-6.png?w=110 110w"
+                                                            sizes="(max-width: 55px) 100vw, 55px" /></figure>
+                                                </div>
+                                                </a>
+
+
+
+                                            <ul>
+                                                {%for requirement in requirements%}
+                                                <li><strong data-rich-text-format-boundary="true">{{requirement['Requirement']}} : {{requirement['Count']}}</strong></li>
+                                                {%endfor%}
+                                                
+                                            </ul>
+
+
+
+                                            <hr class="wp-block-separator" />
+
 
 
                                             <h4><span style="text-decoration:underline;">STUDENTS IN-CHARGE</span></h4>
