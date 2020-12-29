@@ -91,7 +91,7 @@ def get_student(roll_no):
 
 def editstudent(roll_no):
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('login2.html')
     else:
         student = get_student(roll_no)
 
@@ -119,7 +119,7 @@ def editstudent(roll_no):
 @app.route('/events/<string:event_id>/remove/workson/<string:roll_no>',methods = ('POST',))
 def remove_works_on(roll_no,event_id):
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('login2.html')
     conn = get_db_connection()
     conn.execute('DELETE FROM Works_on WHERE Roll_no = ? AND Event_ID = ?', (roll_no,event_id))
     conn.commit()
@@ -147,7 +147,7 @@ def remove_winner(event_id,pid):
 @app.route('/students/newstudent',methods = ('GET','POST'))
 def newstudent():
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('login2.html')
     if request.method == 'POST':
             name = request.form['name']
             roll_no = request.form['roll_no']
@@ -169,7 +169,7 @@ def newstudent():
 @app.route('/events/newevent', methods = ('GET','POST'))
 def newevent():
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('login2.html')
     if request.method == 'POST':
             event_name = request.form['event_name']
             event_id = request.form['event_id']
@@ -189,7 +189,7 @@ def newevent():
 @app.route('/judges/newjudge',methods = ('GET','POST'))
 def newjudge():
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('login2.html')
     if request.method == 'POST':
             name = request.form['name']
             judge_id = request.form['judge_id']
@@ -208,7 +208,7 @@ def newjudge():
 @app.route('/participants/newparticipant',methods = ('GET','POST'))
 def newparticipant():
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('login2.html')
     if request.method == 'POST':
             name = request.form['name']
             pid = request.form['pid']
@@ -228,7 +228,7 @@ def newparticipant():
 @app.route('/venues/newvenue',methods = ('GET','POST'))
 def newvenue():
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('login2.html')
     if request.method == 'POST':
             venue_name = request.form['venue_name']
             venue_id = request.form['venue_id']
@@ -266,7 +266,7 @@ def newwinner(event_id):
 @app.route('/events/<string:event_id>/newrequirement', methods = ('GET','POST'))
 def newrequirement(event_id):
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('login2.html')
     if request.method == 'POST':
         requirement = request.form['requirement']
         count = request.form['count']
@@ -298,7 +298,7 @@ def newparticipation(event_id):
 @app.route('/events/<string:event_id>/newwork', methods = ('GET','POST'))
 def newwork(event_id):
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('login2.html')
     if request.method == 'POST':
         roll_no = request.form['roll_no']
         #reception_status = request.form['reception_status']
