@@ -1,0 +1,1 @@
+chrome-extension://pnhflmgomffaphmnbcogleagmloijbkd/js/scriptlets/subscriber.js
