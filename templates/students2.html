@@ -697,6 +697,9 @@
                                             <p>Committee : {{student['Committee']}}</p>
                                             <p>Year : {{student['Year']}}</p>
                                             <p>Phone : {{student['Phone']}}</p>
+                                        <a href="{{ url_for('editstudent', roll_no=student['roll_no']) }}">
+                                            <span class="badge badge-warning">Edit</span>
+                                        </a>
 
                                         </div>
                                     </div>
