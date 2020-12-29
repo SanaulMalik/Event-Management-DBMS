@@ -26,6 +26,8 @@ def create():
                 return redirect(url_for('index'))
     return render_template('create.html')
 
+
+
 def get_db_connection():
     conn = sqlite3.connect('MainDatabase.db')
     conn.row_factory = sqlite3.Row #row wise access, treats rows like python dictionaries
@@ -75,6 +77,36 @@ def get_winners_for_event(event_id,conn):
     #conn.close()
     return winners
 
+def get_student(roll_no):
+    conn = get_db_connection()
+    student = conn.execute("SELECT Roll_no, Name, Email, Committee, Year, Phone FROM Student WHERE Roll_no = ?",(roll_no,)).fetchone()
+    conn.close()
+    return student
+
+@app.route('/students/edit/<string:roll_no>',methods = ('GET','POST'))
+def editstudent(roll_no):
+    student = get_student(roll_no)
+
+    if request.method == 'POST':
+        #roll_no = request.form['roll_no']
+        name = request.form['name']
+        email = request.form['email']
+        committee = request.form['committee']
+        year = request.form['year']
+        phone = request.form['phone']
+
+        if not name:
+            flash('Name is required!')
+        else:
+            conn = get_db_connection()
+            conn.execute('UPDATE Student SET Name = ?'
+                         ', Email = ?, Committee = ?, Year = ?, Phone = ? WHERE Roll_no = ?',
+                         (name,email,committee,year,phone,roll_no))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
+
+    return render_template('editstudent.html',student = student )
 
 @app.route('/students/newstudent',methods = ('GET','POST'))
 def newstudent():
