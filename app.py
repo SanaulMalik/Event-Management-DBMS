@@ -109,7 +109,7 @@ def editstudent(roll_no):
                          (name,email,committee,year,phone,roll_no))
             conn.commit()
             conn.close()
-            return redirect(url_for('index'))
+            return redirect(url_for('allstudents'))
     
 @app.route('/events/<string:event_id>/remove/workson/<string:roll_no>',methods = ('POST',))
 def remove_works_on(roll_no,event_id):
@@ -118,7 +118,7 @@ def remove_works_on(roll_no,event_id):
     conn.commit()
     conn.close()
     #flash('"{}" was successfully deleted!'.format(student['title']))
-    return redirect(url_for('index'))
+    return redirect(url_for('event',event_id = event_id))
 
 @app.route('/events/<string:event_id>/remove/participant/<string:pid>',methods = ('POST',))
 def remove_participation(event_id,pid):
@@ -172,7 +172,7 @@ def newevent():
                 conn.execute('INSERT INTO Event VALUES (?,?,?,?,?)', (event_id,event_name,date_time,status, venue_id))
                 conn.commit()
                 conn.close()
-                return redirect(url_for('index'))
+                return redirect(url_for('events'))
     return render_template('addevent.html')
 
 @app.route('/judges/newjudge',methods = ('GET','POST'))
@@ -290,7 +290,7 @@ def newwork(event_id):
             conn.execute("INSERT INTO Works_on VALUES (?,?)",(event_id,roll_no))
             conn.commit()
             conn.close()
-            return redirect(url_for('index'))
+            return redirect(url_for('event',event_id = event_id))
     return render_template('addwork.html')
 
         
@@ -306,7 +306,7 @@ def event(event_id):
     judges = get_judges_for_event(event_id, conn)
     winners = get_winners_for_event(event_id,conn)
     venue = get_venue_for_event(event_id,conn)
-    requirements = get_requirements_for_event((event_id,conn))
+    requirements = get_requirements_for_event(event_id,conn)
     
     return render_template('event2.html',event = event, venue = venue,judges = judges,students = students,participants = participants,winners = winners,requirements = requirements)
 
