@@ -32,3 +32,6 @@ CREATE TABLE Works_on(Event_ID VARCHAR(10), Roll_no VARCHAR(10),
 PRIMARY KEY(Event_ID,Roll_no), FOREIGN KEY(Event_ID) 
 REFERENCES Event, FOREIGN KEY(Roll_no) REFERENCES Student);
 
+CREATE TABLE Requirements (Event_ID VARCHAR(10), Requirement VARCHAR(20), 
+Count INTEGER, PRIMARY KEY (Event_ID,Requirement), FOREIGN KEY(Event_ID) REFERENCES Event)
+

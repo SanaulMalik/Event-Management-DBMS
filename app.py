@@ -77,6 +77,11 @@ def get_winners_for_event(event_id,conn):
     #conn.close()
     return winners
 
+def get_requirements_for_event(event_id,conn):
+    requirements = conn.execute("SELECT Requirement, Count FROM Requirements WHERE Event_ID = ?",(event_id,))
+    return requirements
+
+
 def get_student(roll_no):
     conn = get_db_connection()
     student = conn.execute("SELECT Roll_no, Name, Email, Committee, Year, Phone FROM Student WHERE Roll_no = ?",(roll_no,)).fetchone()
@@ -231,7 +236,7 @@ def newwinner(event_id):
         #reception_status = request.form['reception_status']
 
         conn = get_db_connection()
-        participant = conn.execute("SELECT Pid FROM Participants WHERE Pid = ?",(pid,)).fetchone()
+        participant = conn.execute("SELECT Pid FROM Participation WHERE Pid = ? AND Event_ID = ?",(pid,event_id)).fetchone()
         if not participant:
             flash('Enter a valid participant')
         else:
@@ -240,6 +245,20 @@ def newwinner(event_id):
             conn.close()
             return redirect(url_for('index'))
     return render_template('addwinner.html')
+
+@app.route('/events/<string:event_id>/newrequirement', methods = ('GET','POST'))
+def newrequirement(event_id):
+    if request.method == 'POST':
+        requirement = request.form['requirement']
+        count = request.form['count']
+        #reception_status = request.form['reception_status']
+
+        conn.execute("INSERT INTO Requirements (Requirement,Count, Event_ID) VALUES (?,?,?)",(requirement,count,event_id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('event',event_id = event_id))
+    render_template((url_for('addrequirement.html')))
+ 
 
 @app.route('/events/<string:event_id>/newparticipant', methods = ('GET','POST'))
 def newparticipation(event_id):
@@ -287,8 +306,9 @@ def event(event_id):
     judges = get_judges_for_event(event_id, conn)
     winners = get_winners_for_event(event_id,conn)
     venue = get_venue_for_event(event_id,conn)
+    requirements = get_requirements_for_event((event_id,conn))
     
-    return render_template('event2.html',event = event, venue = venue,judges = judges,students = students,participants = participants,winners = winners)
+    return render_template('event2.html',event = event, venue = venue,judges = judges,students = students,participants = participants,winners = winners,requirements = requirements)
 
 
 @app.route("/events")
