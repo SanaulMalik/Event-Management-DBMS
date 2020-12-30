@@ -89,6 +89,7 @@ def get_student(roll_no):
     conn.close()
     return student
 
+@app.route('/students/edit/<string:roll_no>', methods = ('GET','POST'))
 def editstudent(roll_no):
     if not session.get('logged_in'):
         return render_template('login2.html')
