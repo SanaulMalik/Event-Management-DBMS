@@ -1,3 +1,3 @@
 # Event-Management-DBMS
-Wallahi I don't know what is going on
+An event management website with all the features to manage a large event. 
 
